@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { Dna } from 'react-loader-spinner';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
+import Button from 'components/Button/Button';
 
 export default class ImageGallery extends Component {
   state = {
     photos: null,
     page: 1,
-    // loading: false,
     error: null,
     status: 'idle',
   };
@@ -14,10 +15,10 @@ export default class ImageGallery extends Component {
     const prevValue = prevProps.searcheValue;
     const nextValue = this.props.searcheValue;
 
-    if (prevValue !== nextValue) {
-      // console.log('Изменилась строка ввода');
-      // console.log('Предыдущее значение', prevValue);
-      // console.log('Новое значение', nextValue);
+    if (prevValue !== nextValue || prevState.page !== this.state.page) {
+      console.log('Изменилась строка ввода');
+      console.log('Предыдущее значение', prevState.page);
+      console.log('Новое значение', this.state.page);
 
       this.setState({ status: 'pending' });
 
@@ -39,6 +40,18 @@ export default class ImageGallery extends Component {
     }
   }
 
+  loadMore = prevState => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
+
+  toggleModal = () => {
+    this.setState(state => ({
+      showModal: !state.showModal,
+    }));
+  };
+
   render() {
     const { photos, error, status } = this.state;
     const { searcheValue } = this.props;
@@ -59,7 +72,17 @@ export default class ImageGallery extends Component {
     }
 
     if (status === 'pending') {
-      return <h2>Loading, wait....</h2>;
+      return (
+        <Dna
+          visible={true}
+          height="80"
+          width="80"
+          ariaLabel="dna-loading"
+          wrapperStyle={{}}
+          wrapperClass="dna-wrapper"
+        />
+        // <h2>Loading, wait....</h2>
+      );
     }
 
     if (status === 'rejected') {
@@ -68,15 +91,17 @@ export default class ImageGallery extends Component {
 
     if (status === 'resolved') {
       return (
-        <ul className="gallery">
-          {photos.hits.map(({ id, webformatURL, tags }) => (
+        <ul className="ImageGallery">
+          {photos.hits.map(({ id, webformatURL, tags, onClick }) => (
             <ImageGalleryItem
               key={id}
               id={id}
               webformatURL={webformatURL}
               tags={tags}
+              // onClick={this.toggleModal()}
             />
           ))}
+          <Button loadMore={this.loadMore} />
         </ul>
       );
     }

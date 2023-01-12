@@ -2,8 +2,13 @@ import React from 'react';
 
 const ImageGalleryItem = ({ id, webformatURL, tags }) => {
   return (
-    <li key={id} className="gallery-item">
-      <img src={webformatURL} alt={tags} />
+    <li key={id} className="ImageGalleryItem">
+      <img
+        className="ImageGalleryItem-image"
+        src={webformatURL}
+        alt={tags}
+        // onclick={onclick}
+      />
     </li>
   );
 };

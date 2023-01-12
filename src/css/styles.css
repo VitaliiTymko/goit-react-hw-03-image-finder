@@ -76,6 +76,7 @@ img {
   width: 48px;
   height: 48px;
   border: 0;
+  background-color: yellow;
   background-image: url('https://image.flaticon.com/icons/svg/149/149852.svg');
   background-size: 40%;
   background-repeat: no-repeat;
@@ -173,8 +174,11 @@ img {
 }
 
 .Modal {
-  max-width: calc(100vw - 48px);
-  max-height: calc(100vh - 24px);
+  width: 600px;
+  height: 300px;
+  background-color: #fff;
+  /* max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 24px); */
 }
 
 /*
