@@ -27,7 +27,6 @@ export default class App extends Component {
         }
       >
         <SearchBar onSubmit={this.handleFormSubmit} />
-        {this.state.loading && <h1>Loading, wait....</h1>}
         <ImageGallery searcheValue={this.state.searchString} />
       </div>
     );
