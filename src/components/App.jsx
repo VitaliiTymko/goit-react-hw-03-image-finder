@@ -8,14 +8,7 @@ export default class App extends Component {
   state = {
     searchString: '',
     page: 1,
-
     showModal: false,
-  };
-
-  toggleModal = () => {
-    this.setState(state => ({
-      showModal: !state.showModal,
-    }));
   };
 
   handleFormSubmit = searchString => {
@@ -23,6 +16,12 @@ export default class App extends Component {
     this.setState(prevState => {
       prevState.page = 1;
     });
+  };
+
+  toggleModal = () => {
+    this.setState(state => ({
+      showModal: !state.showModal,
+    }));
   };
 
   render() {
@@ -36,7 +35,14 @@ export default class App extends Component {
         <button type="button" onClick={this.toggleModal}>
           Open modal
         </button>
-        {this.state.showModal && <Modal />}
+        {this.state.showModal && (
+          <Modal onClose={this.toggleModal}>
+            <h2>Тут будет модалка с картинкой</h2>
+            <button type="button" onClick={this.toggleModal}>
+              Close modal
+            </button>
+          </Modal>
+        )}
       </div>
     );
   }
