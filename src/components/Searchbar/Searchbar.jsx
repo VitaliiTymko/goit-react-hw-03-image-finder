@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { FiSearch } from 'react-icons/fi';
+// import { toast } from 'react-toastify';
 
 export default class SearchBar extends Component {
   state = {
@@ -13,8 +15,7 @@ export default class SearchBar extends Component {
     event.preventDefault();
 
     if (this.state.searcheValue.trim() === '') {
-      alert('Enter value');
-      return;
+      alert('Enter any word to search');
     }
     this.props.onSubmit(this.state.searcheValue);
     this.setState({ searcheValue: '' });
@@ -25,7 +26,8 @@ export default class SearchBar extends Component {
       <header className="Searchbar">
         <form className="SearchForm" onSubmit={this.handleSubmit}>
           <button type="submit" className="SearchForm-button">
-            <span className="SearchForm-button-label">Search</span>
+            <span className="SearchForm-button-label"></span>
+            <FiSearch size={24} />
           </button>
 
           <input

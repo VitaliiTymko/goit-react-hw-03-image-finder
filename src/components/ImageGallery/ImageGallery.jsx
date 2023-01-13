@@ -6,7 +6,7 @@ import Button from 'components/Button/Button';
 export default class ImageGallery extends Component {
   state = {
     photos: null,
-    page: 1,
+    pageActive: this.props.page,
     error: null,
     status: 'idle',
   };
@@ -15,15 +15,31 @@ export default class ImageGallery extends Component {
     const prevValue = prevProps.searcheValue;
     const nextValue = this.props.searcheValue;
 
-    if (prevValue !== nextValue || prevState.page !== this.state.page) {
-      console.log('Изменилась строка ввода');
-      console.log('Предыдущее значение', prevState.page);
-      console.log('Новое значение', this.state.page);
+    if (prevValue !== nextValue) {
+      // console.log('Вот и изменилось значение, надо скинуть страницу.');
+      this.setState({ pageActive: 1 });
+    }
+
+    if (
+      prevValue !== nextValue ||
+      prevState.pageActive !== this.state.pageActive
+    ) {
+      // console.log('Изменилась строка ввода');
+      // console.log(
+      //   'Предыдущее значение prevState.pageActive',
+      //   prevState.pageActive
+      // );
+      // console.log(
+      //   'Новое значение this.state.pageActive',
+      //   this.state.pageActive
+      // );
+      // console.log('Предыдущее значение prevProps.page', prevProps.page);
+      // console.log('Новое значение this.props.page', this.props.page);
 
       this.setState({ status: 'pending' });
 
       fetch(
-        `https://pixabay.com/api/?q=${nextValue}&page=${this.state.page}&key=31423589-05a77bf58d80d41712d5d29e1&image_type=photo&orientation=horizontal&per_page=12`
+        `https://pixabay.com/api/?q=${nextValue}&page=${this.state.pageActive}&key=31423589-05a77bf58d80d41712d5d29e1&image_type=photo&orientation=horizontal&per_page=12`
       )
         .then(responce => {
           if (responce.ok) {
@@ -35,20 +51,23 @@ export default class ImageGallery extends Component {
             )
           );
         })
-        .then(photos => this.setState({ photos, status: 'resolved' }))
+        .then(photos =>
+          this.setState({
+            photos,
+            status: 'resolved',
+          })
+        )
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
   }
 
-  loadMore = prevState => {
-    this.setState(prevState => ({
-      page: prevState.page + 1,
-    }));
+  LoadMore = prevProps => {
+    this.props.page = prevProps.page + 1;
   };
 
-  toggleModal = () => {
-    this.setState(state => ({
-      showModal: !state.showModal,
+  loadMore = prevState => {
+    this.setState(prevState => ({
+      pageActive: prevState.pageActive + 1,
     }));
   };
 
@@ -61,27 +80,35 @@ export default class ImageGallery extends Component {
         console.log('photos:', photos);
         return (
           <div>
-            Нет изображений с таким {searcheValue}, введите новое значение
+            <h2 className="idle">
+              Нет изображений с таким {searcheValue}, введите новое значение
+            </h2>
           </div>
         );
       }
     }
 
     if (status === 'idle') {
-      return <div>Введите слово для поиска изображения</div>;
+      return (
+        <div>
+          <h2 className="idle">Введите слово для поиска изображения</h2>
+        </div>
+      );
     }
 
     if (status === 'pending') {
       return (
-        <Dna
-          visible={true}
-          height="80"
-          width="80"
-          ariaLabel="dna-loading"
-          wrapperStyle={{}}
-          wrapperClass="dna-wrapper"
-        />
-        // <h2>Loading, wait....</h2>
+        <h2 className="pending">
+          Loading, wait....
+          <Dna
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="dna-loading"
+            wrapperStyle={{}}
+            wrapperClass="dna-wrapper"
+          />
+        </h2>
       );
     }
 
@@ -92,13 +119,13 @@ export default class ImageGallery extends Component {
     if (status === 'resolved') {
       return (
         <ul className="ImageGallery">
-          {photos.hits.map(({ id, webformatURL, tags, onClick }) => (
+          {photos.hits.map(({ id, webformatURL, largeImageURL, tags }) => (
             <ImageGalleryItem
               key={id}
               id={id}
               webformatURL={webformatURL}
               tags={tags}
-              // onClick={this.toggleModal()}
+              largeImageURL={largeImageURL}
             />
           ))}
           <Button loadMore={this.loadMore} />
