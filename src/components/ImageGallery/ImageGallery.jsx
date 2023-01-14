@@ -24,15 +24,16 @@ export default class ImageGallery extends Component {
       prevValue !== nextValue ||
       prevState.pageActive !== this.state.pageActive
     ) {
-      // console.log('Изменилась строка ввода');
-      // console.log(
-      //   'Предыдущее значение prevState.pageActive',
-      //   prevState.pageActive
-      // );
-      // console.log(
-      //   'Новое значение this.state.pageActive',
-      //   this.state.pageActive
-      // );
+      console.log('Изменилась строка ввода');
+      console.log(
+        'Предыдущее значение prevState.pageActive',
+        prevState.pageActive
+      );
+      console.log(
+        'Новое значение this.state.pageActive',
+        this.state.pageActive
+      );
+
       // console.log('Предыдущее значение prevProps.page', prevProps.page);
       // console.log('Новое значение this.props.page', this.props.page);
 
@@ -128,7 +129,9 @@ export default class ImageGallery extends Component {
               largeImageURL={largeImageURL}
             />
           ))}
-          <Button loadMore={this.loadMore} />
+          {photos.totalHits / 12 > this.state.pageActive && (
+            <Button loadMore={this.loadMore} />
+          )}
         </ul>
       );
     }
