@@ -144,12 +144,6 @@ export default class ImageGallery extends Component {
       );
     }
 
-    // {
-    //   photos.totalHits / 12 > this.state.pageActive && (
-    //     <Button loadMore={this.loadMore} />
-    //   );
-    // }
-
     // return (
     //   <div
     //     style={{
