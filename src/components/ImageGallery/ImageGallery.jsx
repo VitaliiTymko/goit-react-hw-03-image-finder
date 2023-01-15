@@ -5,10 +5,11 @@ import Button from 'components/Button/Button';
 
 export default class ImageGallery extends Component {
   state = {
-    photos: null,
+    photos: [],
     pageActive: this.props.page,
     error: null,
     status: 'idle',
+    totalHits: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -17,7 +18,10 @@ export default class ImageGallery extends Component {
 
     if (prevValue !== nextValue) {
       // console.log('Вот и изменилось значение, надо скинуть страницу.');
-      this.setState({ pageActive: 1 });
+      this.setState({
+        pageActive: 1,
+        photos: [],
+      });
     }
 
     if (
@@ -52,42 +56,46 @@ export default class ImageGallery extends Component {
             )
           );
         })
-        .then(photos =>
-          this.setState({
-            photos,
+        .then(data => {
+          console.log('photos after fetch', data);
+          this.setState(prevState => ({
+            photos: [...prevState.photos, ...data.hits],
             status: 'resolved',
-          })
-        )
+            totalHits: data.totalHits,
+          }));
+        })
         .catch(error => this.setState({ error, status: 'rejected' }));
     }
   }
 
-  LoadMore = prevProps => {
-    this.props.page = prevProps.page + 1;
-  };
+  // LoadMore = prevProps => {
+  //   this.props.page = prevProps.page + 1;
+  // };
 
-  loadMore = prevState => {
+  loadMore = event => {
+    event.preventDefault();
     this.setState(prevState => ({
+      // photos: [...prevState.photos, ...photos],
       pageActive: prevState.pageActive + 1,
     }));
   };
 
   render() {
     const { photos, error, status } = this.state;
-    const { searcheValue } = this.props;
+    // const { searcheValue } = this.props;
 
-    if (photos !== null) {
-      if (photos.hits.length === 0) {
-        console.log('photos:', photos);
-        return (
-          <div>
-            <h2 className="idle">
-              Нет изображений с таким {searcheValue}, введите новое значение
-            </h2>
-          </div>
-        );
-      }
-    }
+    // if (photos !== null) {
+    //   if (photos.hits.length === 0) {
+    //     console.log('photos:', photos);
+    //     return (
+    //       <div>
+    //         <h2 className="idle">
+    //           Нет изображений с таким {searcheValue}, введите новое значение
+    //         </h2>
+    //       </div>
+    //     );
+    //   }
+    // }
 
     if (status === 'idle') {
       return (
@@ -120,7 +128,7 @@ export default class ImageGallery extends Component {
     if (status === 'resolved') {
       return (
         <ul className="ImageGallery">
-          {photos.hits.map(({ id, webformatURL, largeImageURL, tags }) => (
+          {photos.map(({ id, webformatURL, largeImageURL, tags }) => (
             <ImageGalleryItem
               key={id}
               id={id}
@@ -129,12 +137,18 @@ export default class ImageGallery extends Component {
               largeImageURL={largeImageURL}
             />
           ))}
-          {photos.totalHits / 12 > this.state.pageActive && (
+          {this.state.totalHits / 12 > this.state.pageActive && (
             <Button loadMore={this.loadMore} />
           )}
         </ul>
       );
     }
+
+    // {
+    //   photos.totalHits / 12 > this.state.pageActive && (
+    //     <Button loadMore={this.loadMore} />
+    //   );
+    // }
 
     // return (
     //   <div
