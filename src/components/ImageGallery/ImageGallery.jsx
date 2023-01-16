@@ -16,6 +16,8 @@ export default class ImageGallery extends Component {
     const prevValue = prevProps.searcheValue;
     const nextValue = this.props.searcheValue;
 
+    window.scrollTo(0, document.body.scrollHeight);
+
     if (prevValue !== nextValue) {
       // console.log('Вот и изменилось значение, надо скинуть страницу.');
       this.setState({
@@ -74,8 +76,8 @@ export default class ImageGallery extends Component {
 
   loadMore = event => {
     event.preventDefault();
+
     this.setState(prevState => ({
-      // photos: [...prevState.photos, ...photos],
       pageActive: prevState.pageActive + 1,
     }));
   };
